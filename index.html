@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Takip Sistemi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>🎉 EtkinlikHub</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Ana Sayfa</a></li>
+                <li><a href="pages/events.html">Etkinlikler</a></li>
+                <li><a href="pages/profile.html">Profilim</a></li>
+                <li><a href="pages/admin.html">Admin</a></li>
+                <li><a href="pages/login.html" id="loginBtn">Giriş Yap</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Etkinlikleri Keşfet ve Katıl!</h1>
+            <p>Şehrinizde düzenlenen tüm etkinlikleri takip edin, favori etkinliklerinizi kaydedin ve katılım sağlayın.</p>
+            <div class="hero-buttons">
+                <button class="btn primary" onclick="window.location.href='pages/events.html'">Etkinlikleri Gör</button>
+                <button class="btn secondary" onclick="window.location.href='pages/login.html'">Ücretsiz Kayıt</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Öne Çıkan Etkinlikler -->
+    <section class="featured-events">
+        <h2>Öne Çıkan Etkinlikler</h2>
+        <div class="events-grid" id="featuredEvents">
+            <div class="event-card">
+                <div class="event-image">🎵</div>
+                <div class="event-info">
+                    <h3>Müzik Festivali</h3>
+                    <p class="event-date">15 Haziran 2025</p>
+                    <p class="event-location">İstanbul - Harbiye</p>
+                    <button class="btn small" onclick="joinEvent('muzik-festivali')">Katıl</button>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <div class="event-image">💻</div>
+                <div class="event-info">
+                    <h3>Teknoloji Konferansı</h3>
+                    <p class="event-date">20 Haziran 2025</p>
+                    <p class="event-location">İstanbul - Maslak</p>
+                    <button class="btn small" onclick="joinEvent('tech-konferans')">Katıl</button>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <div class="event-image">🏃</div>
+                <div class="event-info">
+                    <h3>Maraton Yarışması</h3>
+                    <p class="event-date">25 Haziran 2025</p>
+                    <p class="event-location">İstanbul - Bosphorus</p>
+                    <button class="btn small" onclick="joinEvent('maraton')">Katıl</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- İstatistikler -->
+    <section class="stats">
+        <div class="stat-item">
+            <h3 id="totalEvents">127</h3>
+            <p>Toplam Etkinlik</p>
+        </div>
+        <div class="stat-item">
+            <h3 id="totalUsers">2,456</h3>
+            <p>Kayıtlı Kullanıcı</p>
+        </div>
+        <div class="stat-item">
+            <h3 id="totalParticipants">8,934</h3>
+            <p>Toplam Katılım</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EtkinlikHub</h3>
+                <p>En iyi etkinlik deneyimi için buradayız.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Hızlı Linkler</h4>
+                <ul>
+                    <li><a href="pages/events.html">Etkinlikler</a></li>
+                    <li><a href="pages/login.html">Giriş Yap</a></li>
+                    <li><a href="pages/admin.html">Admin</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>İletişim</h4>
+                <p>📧 info@etkinlikhub.com</p>
+                <p>📞 0212 555 0123</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 EtkinlikHub - Öğrenci Ders Projesi</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - Etkinlik Takip Sistemi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>🎉 EtkinlikHub</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="events.html">Etkinlikler</a></li>
+                <li><a href="profile.html" class="active">Profilim</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="login.html" id="loginBtn">Giriş Yap</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="userAvatar">👤</div>
+            <h2 id="userName">Kullanıcı Adı</h2>
+            <p id="userEmail">email@example.com</p>
+            <p id="userRole">Kullanıcı</p>
+            <button class="btn secondary" onclick="logout()">Çıkış Yap</button>
+        </div>
+
+        <div class="my-events">
+            <h3>🎪 Katıldığım Etkinlikler</h3>
+            <div id="myEventsList" class="event-list">
+                <!-- JavaScript ile doldurulacak -->
+            </div>
+        </div>
+
+        <div class="my-events" style="margin-top: 2rem;">
+            <h3>📊 İstatistiklerim</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
+                    <h4 id="myEventsCount">0</h4>
+                    <p>Katıldığım Etkinlik</p>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 15px;">
+                    <h4 id="totalSpent">0 TL</h4>
+                    <p>Toplam Harcama</p>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 15px;">
+                    <h4 id="favoriteCategory">-</h4>
+                    <p>Favori Kategori</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Giriş kontrolü
+            if (!currentUser) {
+                alert('Bu sayfayı görüntülemek için giriş yapmalısınız!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            updateUI();
+            loadUserProfile();
+            loadUserEvents();
+            loadUserStats();
+        });
+
+        // Kullanıcı profil bilgilerini yükle
+        function loadUserProfile() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Yönetici' : 'Kullanıcı';
+            
+            // Avatar emoji belirleme
+            const avatarEmojis = ['👤', '🧑', '👩', '🧔', '👨', '🦸‍♂️', '🦸‍♀️', '🤵', '👩‍💼', '👨‍💼'];
+            const avatarIndex = currentUser.id % avatarEmojis.length;
+            document.getElementById('userAvatar').textContent = avatarEmojis[avatarIndex];
+        }
+
+        // Kullanıcının katıldığı etkinlikleri yükle
+        function loadUserEvents() {
+            const myEventsList = document.getElementById('myEventsList');
+            
+            if (!currentUser.registeredEvents || currentUser.registeredEvents.length === 0) {
+                myEventsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <h4>Henüz hiç etkinliğe katılmamışsınız</h4>
+                        <p>Etkinlikler sayfasından ilginizi çeken etkinliklere katılabilirsiniz.</p>
+                        <button class="btn primary" onclick="window.location.href='events.html'">Etkinlikleri Gör</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const userEvents = events.filter(event => currentUser.registeredEvents.includes(event.id));
+            
+            myEventsList.innerHTML = userEvents.map(event => `
+                <div class="event-item">
+                    <div class="event-details">
+                        <h4>${event.image} ${event.name}</h4>
+                        <p>📅 ${event.date}</p>
+                        <p>📍 ${event.location}</p>
+                        <p>💰 ${formatPrice(event.price)}</p>
+                        <p>🏷️ ${event.category}</p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                        <span class="event-status status-registered">Kayıtlı</span>
+                        <button class="btn btn-delete" style="padding: 5px 15px; font-size: 0.8rem;" onclick="leaveEventFromProfile(${event.id})">
+                            Çıkış Yap
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Kullanıcı istatistiklerini hesapla
+        function loadUserStats() {
+            if (!currentUser.registeredEvents || currentUser.registeredEvents.length === 0) {
+                document.getElementById('myEventsCount').textContent = '0';
+                document.getElementById('totalSpent').textContent = '0 TL';
+                document.getElementById('favoriteCategory').textContent = '-';
+                return;
+            }
+
+            const userEvents = events.filter(event => currentUser.registeredEvents.includes(event.id));
+            
+            // Katıldığı etkinlik sayısı
+            document.getElementById('myEventsCount').textContent = userEvents.length;
+            
+            // Toplam harcama
+            const totalSpent = userEvents.reduce((total, event) => total + event.price, 0);
+            document.getElementById('totalSpent').textContent = totalSpent.toLocaleString() + ' TL';
+            
+            // Favori kategori
+            const categories = userEvents.map(event => event.category);
+            const categoryCount = categories.reduce((acc, category) => {
+                acc[category] = (acc[category] || 0) + 1;
+                return acc;
+            }, {});
+            
+            let favoriteCategory = '-';
+            if (Object.keys(categoryCount).length > 0) {
+                favoriteCategory = Object.keys(categoryCount).reduce((a, b) => 
+                    categoryCount[a] > categoryCount[b] ? a : b
+                );
+            }
+            
+            document.getElementById('favoriteCategory').textContent = favoriteCategory;
+        }
+
+        // Etkinlikten çıkma (profil sayfasından)
+        function leaveEventFromProfile(eventId) {
+            if (confirm('Bu etkinlikten çıkmak istediğinizden emin misiniz?')) {
+                leaveEvent(eventId);
+                loadUserEvents();
+                loadUserStats();
+            }
+        }
+    </script>
+</body>
+</html>

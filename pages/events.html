@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlikler - Etkinlik Takip Sistemi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>🎉 EtkinlikHub</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="events.html" class="active">Etkinlikler</a></li>
+                <li><a href="profile.html">Profilim</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="login.html" id="loginBtn">Giriş Yap</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🎪 Tüm Etkinlikler</h1>
+            <p>Katılmak istediğiniz etkinlikleri seçin ve kayıt olun!</p>
+        </div>
+
+        <!-- Arama ve Filtreleme -->
+        <div class="admin-card">
+            <h3>🔍 Etkinlik Ara ve Filtrele</h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <input type="text" id="searchInput" placeholder="Etkinlik ara..." style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 10px;">
+                <select id="categoryFilter" style="padding: 10px; border: 2px solid #e0e0e0; border-radius: 10px;">
+                    <option value="all">Tüm Kategoriler</option>
+                    <option value="Müzik">Müzik</option>
+                    <option value="Teknoloji">Teknoloji</option>
+                    <option value="Spor">Spor</option>
+                    <option value="Sanat">Sanat</option>
+                    <option value="Yemek">Yemek</option>
+                </select>
+                <button class="btn primary" onclick="filterEvents()">Filtrele</button>
+            </div>
+        </div>
+
+        <!-- Etkinlik Listesi -->
+        <div id="eventsList" class="events-grid">
+            <!-- JavaScript ile doldurulacak -->
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUI();
+            updateEventsList();
+            
+            // Arama inputu için event listener
+            document.getElementById('searchInput').addEventListener('input', filterEvents);
+            document.getElementById('categoryFilter').addEventListener('change', filterEvents);
+        });
+
+        // Etkinlik listesini güncelle
+        function updateEventsList(filteredEvents = null) {
+            const eventsToShow = filteredEvents || events;
+            const eventsList = document.getElementById('eventsList');
+            
+            if (eventsToShow.length === 0) {
+                eventsList.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.2rem;">Hiç etkinlik bulunamadı.</p>';
+                return;
+            }
+            
+            eventsList.innerHTML = eventsToShow.map(event => `
+                <div class="event-card">
+                    <div class="event-image" style="font-size: 3rem;">${event.image}</div>
+                    <div class="event-info">
+                        <h3>${event.name}</h3>
+                        <p class="event-date">📅 ${event.date}</p>
+                        <p class="event-location">📍 ${event.location}</p>
+                        <p style="color: #666; margin: 0.5rem 0;">${event.description}</p>
+                        <p style="color: #28a745; font-weight: bold;">💰 ${formatPrice(event.price)}</p>
+                        <p style="color: #007bff;">👥 ${event.registered}/${event.capacity} kişi</p>
+                        <p style="color: #6c757d; font-size: 0.9rem;">🏢 ${event.organizer}</p>
+                        
+                        <div style="margin-top: 1rem;">
+                            ${currentUser && currentUser.registeredEvents.includes(event.id) 
+                                ? '<button class="btn" style="background-color: #28a745; color: white;" disabled>✓ Kayıtlısınız</button>'
+                                : `<button class="btn small" onclick="joinEvent(${event.id})">Katıl</button>`
+                            }
+                        </div>
+                        
+                        ${event.registered >= event.capacity 
+                            ? '<p style="color: red; font-weight: bold; margin-top: 0.5rem;">⚠️ DOLU</p>' 
+                            : ''
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Etkinlik filtreleme
+        function filterEvents() {
+            const searchTerm = document.getElementById('searchInput').value;
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            
+            let filteredEvents = events;
+            
+            // Kategori filtresi
+            if (selectedCategory !== 'all') {
+                filteredEvents = filterEventsByCategory(selectedCategory);
+            }
+            
+            // Arama filtresi
+            if (searchTerm) {
+                filteredEvents = searchEvents(searchTerm);
+            }
+            
+            // Her iki filtreyi birleştir
+            if (searchTerm && selectedCategory !== 'all') {
+                filteredEvents = events.filter(event => {
+                    const matchesSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                        event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                        event.description.toLowerCase().includes(searchTerm.toLowerCase());
+                    const matchesCategory = event.category === selectedCategory;
+                    return matchesSearch && matchesCategory;
+                });
+            }
+            
+            updateEventsList(filteredEvents);
+        }
+
+        // Etkinliğe katılma fonksiyonu (override)
+        function joinEvent(eventId) {
+            if (!currentUser) {
+                alert('Etkinliğe katılmak için önce giriş yapmalısınız!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const event = events.find(e => e.id == eventId);
+            if (!event) {
+                alert('Etkinlik bulunamadı!');
+                return;
+            }
+            
+            // Zaten kayıtlı mı kontrol et
+            if (currentUser.registeredEvents.includes(event.id)) {
+                alert('Bu etkinliğe zaten kayıtlısınız!');
+                return;
+            }
+            
+            // Kapasite kontrol et
+            if (event.registered >= event.capacity) {
+                alert('Bu etkinlik dolu! Kapasite sınırına ulaşılmış.');
+                return;
+            }
+            
+            // Etkinliğe kaydet
+            currentUser.registeredEvents.push(event.id);
+            event.registered++;
+            
+            // Local storage'a kaydet
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            alert(`${event.name} etkinliğine başarıyla kaydoldunuz!`);
+            
+            // Listeyi güncelle
+            updateEventsList();
+        }
+    </script>
+</body>
+</html>

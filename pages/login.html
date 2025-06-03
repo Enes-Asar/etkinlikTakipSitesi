@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - Etkinlik Takip Sistemi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>🎉 EtkinlikHub</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="events.html">Etkinlikler</a></li>
+                <li><a href="profile.html">Profilim</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="login.html">Giriş Yap</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>Giriş Yap</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Kullanıcı Adı:</label>
+                    <input type="text" id="loginUsername" placeholder="admin">
+                </div>
+                
+                <div class="form-group">
+                    <label>Şifre:</label>
+                    <input type="password" id="loginPassword" placeholder="admin123">
+                </div>
+                
+                <button type="submit" class="btn primary">Giriş Yap</button>
+            </form>
+
+            <div style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 10px;">
+                <h4>Demo Hesaplar:</h4>
+                <p><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>Kullanıcı:</strong> kullanici1 / 123456</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (login(username, password)) {
+                alert('Başarıyla giriş yaptınız!');
+                window.location.href = '../index.html';
+            } else {
+                alert('Kullanıcı adı veya şifre hatalı!');
+            }
+        });
+    </script>
+</body>
+</html>

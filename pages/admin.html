@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Etkinlik Takip Sistemi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>🎉 EtkinlikHub</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="events.html">Etkinlikler</a></li>
+                <li><a href="profile.html">Profilim</a></li>
+                <li><a href="admin.html" class="active">Admin</a></li>
+                <li><a href="login.html" id="loginBtn">Giriş Yap</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🔧 Admin Paneli</h1>
+            <p>Etkinlik ve kullanıcı yönetimi</p>
+        </div>
+
+        <div class="admin-grid">
+            <!-- Etkinlik Yönetimi -->
+            <div class="admin-card">
+                <h3>📝 Etkinlik Yönetimi</h3>
+                <button class="btn primary" onclick="openModal('addEventModal')">Yeni Etkinlik Ekle</button>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Etkinlik Adı</th>
+                                <th>Tarih</th>
+                                <th>Katılımcı</th>
+                                <th>Kapasite</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTable">
+                            <!-- JavaScript ile doldurulacak -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Yönetimi -->
+            <div class="admin-card">
+                <h3>👥 Kullanıcı Yönetimi</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>Ad Soyad</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- JavaScript ile doldurulacak -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="admin-card">
+                <h3>📊 İstatistikler</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                        <h4 id="totalEventsAdmin">0</h4>
+                        <p>Toplam Etkinlik</p>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                        <h4 id="totalUsersAdmin">0</h4>
+                        <p>Toplam Kullanıcı</p>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                        <h4 id="totalParticipantsAdmin">0</h4>
+                        <p>Toplam Katılım</p>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                        <h4 id="avgParticipation">0%</h4>
+                        <p>Ortalama Doluluk</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Etkinlik Ekleme Modal -->
+    <div id="addEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addEventModal')">&times;</span>
+            <h2>Yeni Etkinlik Ekle</h2>
+            
+            <form id="addEventForm">
+                <div class="form-group">
+                    <label>Etkinlik Adı:</label>
+                    <input type="text" id="eventName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tarih:</label>
+                    <input type="text" id="eventDate" required placeholder="15 Haziran 2025">
+                </div>
+                
+                <div class="form-group">
+                    <label>Konum:</label>
+                    <input type="text" id="eventLocation" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Açıklama:</label>
+                    <textarea id="eventDescription" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Kapasite:</label>
+                    <input type="number" id="eventCapacity" required min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label>Fiyat (TL):</label>
+                    <input type="number" id="eventPrice" required min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>Kategori:</label>
+                    <select id="eventCategory" required>
+                        <option value="">Seçiniz</option>
+                        <option value="Müzik">Müzik</option>
+                        <option value="Teknoloji">Teknoloji</option>
+                        <option value="Spor">Spor</option>
+                        <option value="Sanat">Sanat</option>
+                        <option value="Yemek">Yemek</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Organizatör:</label>
+                    <input type="text" id="eventOrganizer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Emoji İkon:</label>
+                    <input type="text" id="eventImage" placeholder="🎵" maxlength="2">
+                </div>
+                
+                <button type="submit" class="btn primary">Etkinlik Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Admin kontrolü
+            if (!currentUser || !isAdmin()) {
+                alert('Bu sayfaya erişim yetkiniz yok! Admin girişi gereklidir.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            updateUI();
+            loadAdminData();
+            
+            // Form submit event
+            document.getElementById('addEventForm').addEventListener('submit', handleAddEvent);
+        });
+
+        // Admin verilerini yükle
+        function loadAdminData() {
+            loadEventsTable();
+            loadUsersTable();
+            loadAdminStats();
+        }
+
+        // Etkinlikler tablosunu yükle
+        function loadEventsTable() {
+            const eventsTable = document.getElementById('eventsTable');
+            eventsTable.innerHTML = events.map(event => `
+                <tr>
+                    <td>${event.id}</td>
+                    <td>${event.name}</td>
+                    <td>${event.date}</td>
+                    <td>${event.registered}</td>
+                    <td>${event.capacity}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editEvent(${event.id})">Düzenle</button>
+                        <button class="btn-delete" onclick="deleteEventAdmin(${event.id})">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Kullanıcılar tablosunu yükle
+        function loadUsersTable() {
+            const usersTable = document.getElementById('usersTable');
+            usersTable.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td class="action-buttons">
+                        ${user.role !== 'admin' ? `<button class="btn-delete" onclick="deleteUserAdmin(${user.id})">Sil</button>` : '<span>-</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Admin istatistiklerini yükle
+        function loadAdminStats() {
+            document.getElementById('totalEventsAdmin').textContent = events.length;
+            document.getElementById('totalUsersAdmin').textContent = users.length;
+            
+            const totalParticipants = events.reduce((sum, event) => sum + event.registered, 0);
+            document.getElementById('totalParticipantsAdmin').textContent = totalParticipants;
+            
+            const totalCapacity = events.reduce((sum, event) => sum + event.capacity, 0);
+            const avgParticipation = totalCapacity > 0 ? Math.round((totalParticipants / totalCapacity) * 100) : 0;
+            document.getElementById('avgParticipation').textContent = avgParticipation + '%';
+        }
+
+        // Etkinlik ekleme form submit
+        function handleAddEvent(e) {
+            e.preventDefault();
+            
+            const eventData = {
+                name: document.getElementById('eventName').value,
+                date: document.getElementById('eventDate').value,
+                location: document.getElementById('eventLocation').value,
+                description: document.getElementById('eventDescription').value,
+                capacity: document.getElementById('eventCapacity').value,
+                price: document.getElementById('eventPrice').value,
+                category: document.getElementById('eventCategory').value,
+                organizer: document.getElementById('eventOrganizer').value,
+                image: document.getElementById('eventImage').value || '📅'
+            };
+            
+            if (addEvent(eventData)) {
+                alert('Etkinlik başarıyla eklendi!');
+                document.getElementById('addEventForm').reset();
+                closeModal('addEventModal');
+                loadAdminData();
+            } else {
+                alert('Etkinlik eklenirken hata oluştu!');
+            }
+        }
+
+        // Etkinlik silme (Admin)
+        function deleteEventAdmin(eventId) {
+            if (confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) {
+                if (deleteEvent(eventId)) {
+                    alert('Etkinlik başarıyla silindi!');
+                    loadAdminData();
+                } else {
+                    alert('Etkinlik silinirken hata oluştu!');
+                }
+            }
+        }
+
+        // Kullanıcı silme (Admin)
+        function deleteUserAdmin(userId) {
+            if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+                if (deleteUser(userId)) {
+                    alert('Kullanıcı başarıyla silindi!');
+                    loadAdminData();
+                } else {
+                    alert('Kullanıcı silinirken hata oluştu!');
+                }
+            }
+        }
+
+        // Etkinlik düzenleme (basit alert ile)
+        function editEvent(eventId) {
+            const event = events.find(e => e.id == eventId);
+            if (event) {
+                const newName = prompt('Yeni etkinlik adı:', event.name);
+                if (newName && newName !== event.name) {
+                    event.name = newName;
+                    alert('Etkinlik adı güncellendi!');
+                    loadAdminData();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
